@@ -1,0 +1,108 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  // Postgres gratuito (ex: Neon) — funciona igual em dev e em producao (Vercel)
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Hotel {
+  id          Int      @id @default(autoincrement())
+  slug        String   @unique
+  nome        String
+  cidade      String
+  estado      String
+  estrelas    Int      @default(3)
+  endereco    String
+  fraseDestaque String @default("") // frase curta, aparece nos cards e nas listagens
+  descricao   String   // texto mais longo, aparece na pagina de detalhes do hotel
+  comodidades String   // JSON string, ex: ["Wi-Fi","Estacionamento","Cafe da manha"]
+  imagens     String   // JSON string com URLs das fotos
+  categoria   String   @default("Cidade") // Praia | Serra | Cidade | Campo
+  aceitaEventos     Boolean @default(false) // tem sala de eventos/reuniao
+  capacidadeEventos Int?    // numero maximo de pessoas na maior sala
+  temTraslado       Boolean @default(false) // oferece traslado/transporte
+  destaque    Boolean  @default(false)
+  publicado   Boolean  @default(true)
+  criadoEm    DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+}
+
+model Orcamento {
+  id        Int      @id @default(autoincrement())
+  nome      String
+  empresa   String?
+  cnpj      String?
+  email     String
+  telefone  String
+  hotelSlug String?
+  mensagem  String
+  criadoEm  DateTime @default(now())
+}
+
+// Tabela unica (id = 1) com as credenciais editaveis do admin.
+// A senha e guardada como hash (nunca em texto puro). Comeca vazia; na
+// primeira vez, o sistema usa ADMIN_EMAIL/ADMIN_PASSWORD do .env, e passa
+// a usar esta tabela assim que a Simone trocar a senha pelo painel.
+model AdminConfig {
+  id           Int      @id @default(1)
+  senhaHash    String?  // hash SHA-256 da senha; se null, usa a senha do .env
+  atualizadoEm DateTime @updatedAt
+}
+
+// Tabela unica (sempre id = 1) com os textos institucionais editaveis
+// pelo painel /admin/conteudo — hero da home, cobertura, como funciona,
+// intro da pagina de hoteis, formulario e rodape.
+model SiteConteudo {
+  id              Int      @id @default(1)
+  heroEyebrow     String
+  heroTitulo      String
+  heroTexto       String
+  destaquesFrase  String   @default("") // frase acima do carrossel de hoteis em destaque na home
+  cobertura       String   // JSON array de strings, ex: ["Barra da Tijuca","Copacabana"]
+  comoFunciona    String   // JSON array de 3 { titulo, texto }
+  orcamentoTitulo String
+  orcamentoTexto  String
+  hoteisIntro     String   // paragrafo de apresentacao no topo da pagina de hoteis
+  hoteisBannerFoto  String @default("") // foto de fundo do banner do topo da pagina Hoteis
+  hoteisBannerFrase String @default("Hospedagem pensada para o público corporativo") // frase do banner do topo da pagina Hoteis
+  instalacoesTitulo String @default("Instalações dos hotéis parceiros")
+  instalacoesTexto  String @default("")
+  instalacoes       String @default("[]") // JSON array de { icone, titulo, texto }
+  hoteisCtaTitulo   String @default("Não encontrou o hotel ideal?")
+  hoteisCtaTexto    String @default("")
+  sobreHeroEyebrow    String @default("Sobre a RedBlue Hotels")
+  sobreHeroTitulo     String @default("")
+  sobreQuemSomosTitulo String @default("Quem somos")
+  sobreQuemSomosTexto  String @default("")
+  sobreContadores      String @default("[]") // JSON array de { numero, titulo, sub }
+  sobrePilaresTitulo   String @default("Por que confiar na RedBlue")
+  sobrePilares         String @default("[]") // JSON array de { titulo, texto }
+  sobreListaTitulo     String @default("Hotéis que confiam na gente")
+  sobreCtaTitulo       String @default("")
+  sobreCtaTexto        String @default("")
+  telefone        String
+  email           String
+  footerTagline   String
+  atualizadoEm    DateTime @updatedAt
+}
+
+// Slides dos carrosseis-banner que a Simone monta na mao (foto + texto),
+// sem depender de nenhum hotel cadastrado. "local" diz onde o slide
+// aparece: "home" (banner do topo da home) ou "sobre" (carrossel
+// Para empresas / Off-Shore / Eventos). O banner da pagina Hoteis e um
+// unico slide fixo, guardado direto em SiteConteudo (mais simples).
+model BannerSlide {
+  id       Int      @id @default(autoincrement())
+  local    String   // "home" | "sobre"
+  ordem    Int      @default(0)
+  foto     String   @default("")
+  legenda  String   @default("") // legenda/pin pequeno (usado no "home")
+  frase    String   @default("") // frase grande (usado no "home")
+  tag      String   @default("") // selo da categoria (usado no "sobre", ex: "Para empresas")
+  titulo   String   @default("") // titulo do slide (usado no "sobre")
+  texto    String   @default("") // paragrafo do slide (usado no "sobre")
+  criadoEm DateTime @default(now())
+}
