@@ -2,6 +2,13 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSiteConteudo } from "@/lib/siteContent";
 
+// Forca essa rota a ser sempre dinamica. Sem isso, como o GET nao le nada
+// da propria requisicao (nem searchParams, nem cookies), o Next.js
+// otimiza a rota inteira como estatica no build — e uma rota estatica
+// nao aceita PUT de verdade, o que fazia a Vercel nem criar uma funcao
+// pra ela (por isso o 503 e o sumico na lista de Functions).
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   const conteudo = await getSiteConteudo();
   return NextResponse.json(conteudo);
