@@ -14,7 +14,6 @@ export const metadata = {
 
 export default async function HoteisPage({ searchParams }) {
   const cidade = searchParams?.cidade || "";
-  const estrelas = searchParams?.estrelas || "";
   const categoria = searchParams?.categoria || "";
 
   const [hoteisRaw, conteudo] = await Promise.all([
@@ -22,7 +21,6 @@ export default async function HoteisPage({ searchParams }) {
       where: {
         publicado: true,
         ...(cidade ? { cidade: { contains: cidade } } : {}),
-        ...(estrelas ? { estrelas: Number(estrelas) } : {}),
         ...(categoria ? { categoria } : {}),
       },
       orderBy: [{ destaque: "desc" }, { criadoEm: "desc" }],
@@ -88,16 +86,6 @@ export default async function HoteisPage({ searchParams }) {
               <option value="Serra">Serra</option>
               <option value="Cidade">Cidade</option>
               <option value="Campo">Campo</option>
-            </select>
-            <select
-              name="estrelas"
-              defaultValue={estrelas}
-              className="rounded-full border border-navy-900/20 px-4 py-2 text-sm bg-white"
-            >
-              <option value="">Todas as estrelas</option>
-              {[5, 4, 3, 2, 1].map((n) => (
-                <option key={n} value={n}>{"★".repeat(n)}</option>
-              ))}
             </select>
             <button
               type="submit"
