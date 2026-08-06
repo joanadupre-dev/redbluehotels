@@ -77,7 +77,7 @@ export default function BannerHero({ slides }) {
             href="/hoteis"
             className="bg-white text-navy-900 px-7 py-3.5 rounded-full font-600 text-[15px] hover:bg-brick-500 hover:text-white transition-colors"
           >
-            Ver hotéis parceiros
+            Hotéis
           </Link>
           <Link
             href="/#orcamento"
