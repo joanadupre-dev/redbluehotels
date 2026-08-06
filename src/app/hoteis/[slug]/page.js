@@ -28,7 +28,7 @@ export default async function HotelDetailPage({ params }) {
         {hotel.cidade} · {hotel.estado}
       </p>
       <h1 className="font-display text-3xl sm:text-4xl font-700 mb-2">{hotel.nome}</h1>
-      <p className="text-ink/70 mb-4">{"★".repeat(hotel.estrelas)} · {hotel.endereco}</p>
+      <p className="text-ink/70 mb-4">{hotel.endereco}</p>
 
       {(hotel.aceitaEventos || hotel.temTraslado) && (
         <div className="flex flex-wrap gap-2 mb-8">
@@ -56,7 +56,7 @@ export default async function HotelDetailPage({ params }) {
 
           {hotel.comodidades.length > 0 && (
             <>
-              <h2 className="font-display text-xl font-600 mb-3">Comodidades</h2>
+              <h2 className="font-display text-xl font-600 mb-3">Serviços</h2>
               <ul className="grid grid-cols-2 gap-2 text-sm text-ink/80">
                 {hotel.comodidades.map((c, i) => (
                   <li key={i} className="flex items-center gap-2">
