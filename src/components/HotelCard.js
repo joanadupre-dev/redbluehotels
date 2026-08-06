@@ -29,7 +29,6 @@ export default function HotelCard({ hotel }) {
           {hotel.cidade} · {hotel.categoria}
         </p>
         <h3 className="font-display text-lg font-600 mb-1">{hotel.nome}</h3>
-        <p className="text-sm text-ink/70 mb-2">{"★".repeat(hotel.estrelas)}</p>
         {(hotel.aceitaEventos || hotel.temTraslado) && (
           <div className="flex flex-wrap gap-1.5 mb-2">
             {hotel.aceitaEventos && (
