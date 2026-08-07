@@ -8,12 +8,34 @@ import OrcamentoForm from "@/components/OrcamentoForm";
 
 export const dynamic = "force-dynamic";
 
+const ORDEM_HOTEIS = [
+  "lagune-barra-hotel",
+  "americas-copacabana",
+  "americas-benidorm",
+  "regency-park-hotel",
+  "americas-granada",
+  "golden-towers",
+  "pousada-rio-sol",
+  "alameda-vitoria",
+  "hotel-pousada-do-sol",
+];
+
+function ordenarPorSlug(lista) {
+  return [...lista].sort((a, b) => {
+    const posA = ORDEM_HOTEIS.indexOf(a.slug);
+    const posB = ORDEM_HOTEIS.indexOf(b.slug);
+    if (posA === -1 && posB === -1) return 0;
+    if (posA === -1) return 1;
+    if (posB === -1) return -1;
+    return posA - posB;
+  });
+}
+
 export default async function HomePage() {
   const [destaquesRaw, conteudo, bannerSlides, todosHoteis] = await Promise.all([
     prisma.hotel.findMany({
       where: { publicado: true, destaque: true },
       orderBy: { criadoEm: "desc" },
-      take: 6,
     }),
     getSiteConteudo(),
     getBannerSlides("home"),
@@ -24,7 +46,7 @@ export default async function HomePage() {
     }),
   ]);
 
-  const hoteis = destaquesRaw.map((h) => ({
+  const hoteis = ordenarPorSlug(destaquesRaw).slice(0, 6).map((h) => ({
     ...h,
     comodidades: JSON.parse(h.comodidades || "[]"),
     imagens: JSON.parse(h.imagens || "[]"),
