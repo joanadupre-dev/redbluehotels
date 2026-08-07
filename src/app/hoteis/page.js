@@ -12,6 +12,29 @@ export const metadata = {
     "Hotéis parceiros da RedBlue Hotels em Barra da Tijuca, Copacabana, Centro, Macaé, Porto do Açu e Vitória, com tarifa corporativa para empresas.",
 };
 
+const ORDEM_HOTEIS = [
+  "lagune-barra-hotel",
+  "americas-copacabana",
+  "americas-benidorm",
+  "regency-park-hotel",
+  "americas-granada",
+  "golden-towers",
+  "pousada-rio-sol",
+  "alameda-vitoria",
+  "hotel-pousada-do-sol",
+];
+
+function ordenarPorSlug(lista) {
+  return [...lista].sort((a, b) => {
+    const posA = ORDEM_HOTEIS.indexOf(a.slug);
+    const posB = ORDEM_HOTEIS.indexOf(b.slug);
+    if (posA === -1 && posB === -1) return 0;
+    if (posA === -1) return 1;
+    if (posB === -1) return -1;
+    return posA - posB;
+  });
+}
+
 export default async function HoteisPage({ searchParams }) {
   const cidade = searchParams?.cidade || "";
   const categoria = searchParams?.categoria || "";
@@ -28,7 +51,7 @@ export default async function HoteisPage({ searchParams }) {
     getSiteConteudo(),
   ]);
 
-  const hoteis = hoteisRaw.map((h) => ({
+  const hoteis = ordenarPorSlug(hoteisRaw).map((h) => ({
     ...h,
     comodidades: JSON.parse(h.comodidades || "[]"),
     imagens: JSON.parse(h.imagens || "[]"),
