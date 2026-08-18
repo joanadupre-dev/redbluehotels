@@ -19,7 +19,7 @@ export default function BannerHero({ slides }) {
 
   useEffect(() => {
     if (lista.length <= 1) return;
-    const t = setInterval(() => ir(atual + 1), 5000);
+    const t = setInterval(() => ir(atual + 1), 12000);
     return () => clearInterval(t);
   }, [atual, ir, lista.length]);
 
